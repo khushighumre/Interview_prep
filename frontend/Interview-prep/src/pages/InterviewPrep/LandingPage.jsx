@@ -6,6 +6,7 @@ import { LuSparkles } from 'react-icons/lu'; // ✅ note: use 'react-icons/lu', 
 import { APP_FEATURES } from '../../utils/data';
 import Modal from "../../components/Modal.jsx"; // adjust path if needed
 import Login from '../Auth/Login.jsx';
+import SignUp from '../Auth/SignUp.jsx';
 
 
 
