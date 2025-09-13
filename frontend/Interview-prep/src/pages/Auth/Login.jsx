@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from "../../components/Inputs/Input.jsx";
 import { validateEmail } from '../../utils/helper.js';
+import axiosInstance from '../../utils/axiosInstance.js';
+import { API_PATHS } from '../../utils/apiPaths.js';
  // ✅ Ensure the path is correct
 
 const Login = ({ setCurrentPage }) => {
@@ -31,7 +33,14 @@ const Login = ({ setCurrentPage }) => {
     setError("");
 
     try{
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, { email, password });
 
+      const { token } = response.data;
+
+      if(token){
+        localStorage.setItem("token", token);
+        navigate("/dashboard");
+      }
     }catch(error){
       if(error.response && error.response.data.message){
         setError(error.response.data.message);
