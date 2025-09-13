@@ -10,7 +10,6 @@ const addQuestionsToSession = async (req, res) => {
         if (!sessionId || !questions || !Array.isArray(questions) ) {
             return res.status(400).json({ message: "Invalid input data" });
         }
-
         const session = await Session.findById(sessionId);
         if (!session) {
             return res.status(404).json({ message: "Session not found" });
@@ -23,11 +22,9 @@ const addQuestionsToSession = async (req, res) => {
                 answer: q.answer ,
             }))
         );
-
         // Update session to include new questions IDs
         session.questions.push(...createdQuestions.map((q) => q._id));
         await session.save();
-
         res.status(201).json( createdQuestions);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
@@ -43,7 +40,6 @@ const togglePinQuestion = async (req, res) => {
        if (!question) {
         return res.status(404).json({ message: "Question not found" });
        }
-
        question.isPinned = !question.isPinned;
        await question.save();
        res.status(200).json({ success: true, question });
