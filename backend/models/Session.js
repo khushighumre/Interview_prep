@@ -9,4 +9,4 @@ const sessionSchema = new mongoose.Schema({
     questions: [{type: mongoose.Schema.Types.ObjectId, ref: "Question"}],
 }, {timestamps: true});
 
-module.exports = mongoosse.model("Session", sessionSchema);
+module.exports = mongoose.model("Session", sessionSchema);
