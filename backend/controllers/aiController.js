@@ -1,38 +1,58 @@
+const { GoogleGenAI} = require("@google/genai");
+const { questionAnswerPrompt, conceptExplainPrompt } = require("../utils/prompts");
+
+const ai = new GoogleGenAI({
+    apiKey: process.env.GOOGLE_API_KEY,
+});
+
+// @desc Generte interview questions and answers using Gemini
+// route POST/api/ai/generate-questions
+// access Private (Requires JWT)
 const generateInterviewQuestions = async (req, res) => {
   try {
-    // TODO: Implement AI question generation logic
-    res.status(200).json({
-      success: true,
-      message: "Interview questions generated successfully",
-      questions: []
+    const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
+
+    if (!role || !experience || !topicsToFocus || !numberOfQuestions) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const prompt = questionAnswerPrompt(role, experience, topicsToFocus, numberOfQuestions);
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash-lite",
+      contents: prompt,
     });
+
+    let rawText = response.text;
+
+    // Clean it: Remove ````json` and ``` from beginning and end
+    const cleanedText = rawText
+    .replace(/^```json\s*/, "") // remove starting ```json
+    .replace(/```$/, "") // remove ending ```
+    .trim();
+
+    // Now safe to parse
+    const data = JSON.parse(cleanedText);
+
+    res.status(200).json( data );
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error generating interview questions",
-      error: error.message
-    });
+    res.status(500).json({ message: "Failed to generate questions",
+      error: error.message,
+     });
   }
 };
 
+// @desc Generate explains a interview question using Gemini
+// @route POST/api/ai/generate-explanation
+// @access Private (Requires JWT)
 const generateConceptExplaination = async (req, res) => {
   try {
-    // TODO: Implement AI concept explanation logic
-    res.status(200).json({
-      success: true,
-      message: "Concept explanation generated successfully",
-      explanation: ""
-    });
+    
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error generating concept explanation",
-      error: error.message
-    });
+    res.status(500).json({ message: "Failed to generate explanation",
+      error: error.message,
+     });
   }
 };
 
-module.exports = {
-  generateInterviewQuestions,
-  generateConceptExplaination
-};
+module.exports = { generateInterviewQuestions, generateConceptExplaination };

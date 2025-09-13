@@ -10,13 +10,11 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const questionRoutes = require("./routes/questionRoutes");
+const {generateConceptExplaination, generateInterviewQuestions} = require("./controllers/aiController");
 
 // Import controllers/middleware
 const { protect } = require("./middlewares/authMiddleware");
-const { 
-  generateInterviewQuestions, 
-  generateConceptExplaination 
-} = require("./controllers/aiController"); // ✅ FIXED
+
 
 const app = express();
 
