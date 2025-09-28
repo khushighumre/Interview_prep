@@ -3,7 +3,7 @@ import { UserContext } from '../../context/userContext';
 import Navbar from './Navbar';
 
 const DashboardLayout = ({children}) => {
-    const {user} = React.useContext(UserContext);
+    const {user} = useContext(UserContext);
   return (
     <div>
       <Navbar/>

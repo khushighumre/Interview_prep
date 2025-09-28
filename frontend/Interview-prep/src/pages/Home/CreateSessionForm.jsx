@@ -2,6 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import Input from '../../components/Inputs/Input';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
+import axiosinstance from '../../utils/axiosinstance';
+import API_PATHS from '../../utils/apiPaths';
+
+// import GENERATE_QUESTIONS from '/api/ai/generate-questions';
 
 
 const CreateSessionForm = () => {
@@ -34,7 +38,49 @@ const CreateSessionForm = () => {
       return;
     }
 
-    setError(null);
+    setError("");
+    setIsLoading(true);
+
+    try {
+      // Call ai api to generate questions
+      const aiResponse = await axiosinstance.post(
+      API_PATHS.AI.GENERATE_QUESTIONS,
+      {
+        role,
+        experience,
+        topicsToFocus,
+        numberOfQuestions: 10,
+
+      }  
+      );
+
+       console.log("AI Response raw (frontend):", aiResponse.data);
+
+
+      // should be array like [{questions, answers}, ...]
+      const generatedQuestions = aiResponse.data;
+
+       console.log("Generated Questions being saved:", generatedQuestions);
+      
+      const response = await axiosinstance.post(API_PATHS.SESSIONS.CREATE, {
+        ...formData,
+        questions: generatedQuestions,
+      });
+
+      if (response.data?.session?._id){
+        navigate(`/interview-prep/${response.data?.session?._id}`)
+      }
+    } catch (error) {
+      console.error("Create session error:", error);
+  console.error("Backend response:", error.response?.data);  
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else{
+        setError("Something went wrong. Please try again");
+      }
+    } finally{
+      setIsLoading(false);
+    }
   };
   return <div className='w-[90vw] md:w-[35vw] p-7 flex flex-col justify-center'>
     <h3 className='text-lg font-semibold text-black'>

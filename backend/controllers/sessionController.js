@@ -114,11 +114,13 @@ const createSession = async (req, res) => {
 
         const questionDocs = await Promise.all(
             questions.map(async (q) => {
+                console.log('Creating question with data:', q);
                 const question = await Question.create({
                     session: session._id,
                     question: q.question,
                     answer: q.answer,
                 });
+                console.log('Created question:', question);
                 return question;
             })
         );

@@ -23,7 +23,12 @@ const generateInterviewQuestions = async (req, res) => {
       contents: prompt,
     });
 
+    console.log("Raw Gemini response:", response);
+
+
     let rawText = response.text;
+
+    console.log("Raw text returned from Gemini:", rawText);
 
     // Clean it: Remove ````json` and ``` from beginning and end
     const cleanedText = rawText
@@ -70,7 +75,7 @@ const generateConceptExplaination = async (req, res) => {
 
     // Now safe to parse
     const data = JSON.parse(cleanedText);
-
+    
     res.status(200).json( data );
   } catch (error) {
     res.status(500).json({ message: "Failed to generate explanation",
