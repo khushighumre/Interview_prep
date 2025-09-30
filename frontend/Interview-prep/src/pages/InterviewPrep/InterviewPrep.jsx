@@ -4,6 +4,7 @@ import moment from 'moment';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LuCircleAlert, LuListCollapse } from 'react-icons/lu';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
+import SkeletonLoader from '../../components/Loader/SkeletonLoader';
 import {toast} from 'react-hot-toast';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -12,6 +13,12 @@ import RoleInfoHeader from './components/RoleInfoHeader';
 import axiosinstance from '../../utils/axiosinstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import QuestionCard from '../../components/Cards/QuestionCard';
+// import AIResponsePreview from './components/AIResponsePreview';
+// import Drawer from '../../components/Drawer';
+import AIResponsePreview from './components/AIResponsePreview';
+import Drawer from '../../components/Drawer';
+
+
 
 
 
@@ -47,13 +54,55 @@ const InterviewPrep = () => {
   };
 
   // Generate explaination for a question
-  const generateConceptExplaination = async(question) => {};
+  const generateConceptExplaination = async(question) => {
+    try {
+      console.log('Generating explanation for question:', question);
+      setErrorMsg("");
+      setExplanation(null);
+
+      setIsLoading(true);
+      setOpenLearnMoreDrawer(true);
+
+      const response = await axiosinstance.post(
+        API_PATHS.AI.GENERATE_EXPLAINATION,
+        {
+          question,
+        }
+      );
+
+      console.log('Explanation response:', response.data);
+      if(response.data){
+        setExplanation(response.data);
+      }
+
+    } catch (error) {
+      setExplanation(null);
+      setErrorMsg("Failed to generate explanation, Try again later");
+      console.error("Error generating explanation:", error);
+    }finally{
+      setIsLoading(false);
+    }
+  };
 
   // Toggle pin or unpin a question
-  const toggleQuestionPinStatus = async(questionId) => {};  
+  const toggleQuestionPinStatus = async(questionId) => {
+    try {
+      const response = await axiosinstance.post(
+        API_PATHS.QUESTION.PIN(questionId)
+      );
+      
+      if (response.data) {
+        fetchSessionDetailsById(); // Refresh data
+      }
+    } catch (error) {
+      console.error("Error toggling pin:", error);
+    }
+  };  
 
   // Add more questions to session
-  const uploadMoreQuestions = async() => {};
+  const uploadMoreQuestions = async() => {
+    
+  };
 
   useEffect(() => {
    if (sessionId) {
@@ -114,13 +163,16 @@ const InterviewPrep = () => {
                       question={data?.question}
                       answer={data?.answer}
                       onLearnMore={() =>
-                        generateConceptExplaination(data.question)
+                        generateConceptExplaination(data.question || 'Sample question for explanation')
                       }
                       isPinned={data?.isPinned }
                       onTogglePin={() => toggleQuestionPinStatus(data._id)}
                       />
 
-                      </>
+                     
+                     
+
+                       </>
                     </motion.div>
 
                   )
@@ -132,6 +184,20 @@ const InterviewPrep = () => {
       </div>
       </div>
       
+      <Drawer
+        isOpen={openLeanMoreDrawer}
+        onClose={() => setOpenLearnMoreDrawer(false)}
+        title={!isLoading && explanation?.title}>
+          {errorMsg && (
+            <p className="flex gap-2 text-sm text-amber-600 font-medium">
+              <LuCircleAlert className='mt-1'/> {errorMsg}
+            </p> 
+          )}
+          {isLoading && <SkeletonLoader/>}
+          {!isLoading && explanation && (
+              <AIResponsePreview content = {explanation?.explaination}/>
+          )}
+        </Drawer>
       
        </DashboardLayout>
   )
