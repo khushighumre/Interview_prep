@@ -168,8 +168,8 @@ const InterviewPrep = () => {
           : "-"
       }/>
 
-      <div className="">
-        <h2 className ="">Interview Q & A</h2>
+      <div className="px-6 py-4 max-w-7xl mx-auto">
+        <h2 className ="text-2xl font-semibold text-gray-800 mb-6">Interview Q & A</h2>
           <div className="">
             <div className={`col-span-12 ${
               openLeanMoreDrawer ? "md:col-span-7" : "md:col-span-8"

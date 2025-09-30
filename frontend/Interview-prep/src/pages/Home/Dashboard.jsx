@@ -134,8 +134,8 @@ const Dashboard = () => {
 
   return (
   <DashboardLayout>
-      <div className='container mx-auto pt-4 ppb-4'>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mmd:gap-7 pt-1 pb-6 px-4 md:px-0'>
+      <div className='container mx-auto px-6 py-8 max-w-7xl'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-4 mb-8'>
           {sessions?.map((data, index) => (
             <SummaryCard
               key={data?._id}

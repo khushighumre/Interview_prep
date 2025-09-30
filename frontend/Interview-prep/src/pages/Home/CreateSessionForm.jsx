@@ -82,7 +82,7 @@ const CreateSessionForm = () => {
       setIsLoading(false);
     }
   };
-  return <div className='w-[90vw] md:w-[35vw] p-7 flex flex-col justify-center'>
+  return <div className='w-[90vw] md:w-[35vw] px-8 py-8 mx-4 my-2 flex flex-col justify-center'>
     <h3 className='text-lg font-semibold text-black'>
         Start a New Interview Journey
     </h3>
@@ -90,7 +90,7 @@ const CreateSessionForm = () => {
         Fill out a few quick details and unlock your personalized set of interview questions.
     </p>
 
-    <form className='flex flex-col gap-3' onSubmit={handleCreateSession}>
+    <form className='flex flex-col gap-4 mt-4' onSubmit={handleCreateSession}>
         <Input 
             value={formData.role}
             onChange={({target}) => handleChange("role", target.value)}
