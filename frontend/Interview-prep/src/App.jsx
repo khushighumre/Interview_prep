@@ -7,6 +7,8 @@ import SignUp from './pages/Auth/SignUp';
 import LandingPage from './pages/InterviewPrep/LandingPage';
 import Dashboard from './pages/Home/Dashboard';
 import InterviewPrep from './pages/InterviewPrep/InterviewPrep';
+import OptionsPage from './pages/options_page/OptionsPage';
+import AIInterview from './pages/AIInterview/AIInterview';
 
 import { UserProvider } from './context/userContext';
 
@@ -19,7 +21,9 @@ const App = () => {
       <Route path="/" element={<LandingPage/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/signUp" element={<SignUp/>}/>
+      <Route path="/options" element={<OptionsPage/>}/>
       <Route path="/dashboard" element={<Dashboard/>}/>
+      <Route path="/ai-interview" element={<AIInterview/>}/>
       <Route path="/interview-prep/:sessionId" element={<InterviewPrep/>}/>
     </Routes>
     </Router>
